@@ -34,8 +34,8 @@ if text.count(new) != 0:
 path.write_text(text.replace(old, new))
 PY
 
-old_count="$(grep -Fo "$OLD_CLIENT_TOKEN" "$anisette_rel" | wc -l | tr -d ' ')"
-new_count="$(grep -Fo "$NEW_CLIENT_TOKEN" "$anisette_rel" | wc -l | tr -d ' ')"
+old_count="$( (grep -Fo "$OLD_CLIENT_TOKEN" "$anisette_rel" || true) | wc -l | tr -d ' ')"
+new_count="$( (grep -Fo "$NEW_CLIENT_TOKEN" "$anisette_rel" || true) | wc -l | tr -d ' ')"
 [[ "$old_count" == "0" ]] || { echo "ERROR: blocked Xcode client token remains in AltServer anisette source" >&2; exit 42; }
 [[ "$new_count" == "$EXPECTED_OCCURRENCES" ]] || { echo "ERROR: expected $EXPECTED_OCCURRENCES akd client tokens, got $new_count" >&2; exit 43; }
 
