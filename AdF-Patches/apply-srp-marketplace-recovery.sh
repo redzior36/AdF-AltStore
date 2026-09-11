@@ -53,12 +53,12 @@ project = Path('AltStore.xcodeproj/project.pbxproj')
 text = project.read_text()
 debug_old = 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MARKETPLACE";'
 release_old = 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = MARKETPLACE;'
-if text.count(debug_old) != 2:
-    raise SystemExit(f'ERROR: expected two Debug MARKETPLACE conditions, got {text.count(debug_old)}')
-if text.count(release_old) != 2:
-    raise SystemExit(f'ERROR: expected two Release MARKETPLACE conditions, got {text.count(release_old)}')
-text = text.replace(debug_old, 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;')
-text = text.replace(release_old, 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";')
+if text.count(debug_old) != 1:
+    raise SystemExit(f'ERROR: expected one Debug MARKETPLACE condition, got {text.count(debug_old)}')
+if text.count(release_old) != 1:
+    raise SystemExit(f'ERROR: expected one Release MARKETPLACE condition, got {text.count(release_old)}')
+text = text.replace(debug_old, 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;', 1)
+text = text.replace(release_old, 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";', 1)
 project.write_text(text)
 PY
 
