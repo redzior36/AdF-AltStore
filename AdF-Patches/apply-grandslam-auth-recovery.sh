@@ -5,6 +5,7 @@ BASE_ALTSTORE_SHA="56854e66fef2eac32dad88dcbad1dc131d430e60"
 EXPECTED_ALTSIGN_SHA="790b9ccdaf2cec831689395c527e80f1f2838041"
 EXPECTED_SOURCE_BLOB="2d3e50c21faba2c751ac85a7dc4abe9c1f90d26c"
 EXPECTED_PATCHED_BLOB="fcb6c74f7ac0ed5578a9e956404a859295d54af7"
+EXPECTED_TEST_BLOB="d94eea268b203c93082260c201e3840dcfe96fcd"
 UPSTREAM_ALTSIGN_PR="https://github.com/rileytestut/AltSign/pull/53"
 UPSTREAM_ALTSIGN_HEAD="530e44aee968da15f8efe8d8eef829f3944ee318"
 
@@ -16,7 +17,7 @@ if ! git merge-base --is-ancestor "$BASE_ALTSTORE_SHA" HEAD; then
   exit 20
 fi
 
-expected_gitlink_line="160000 commit $EXPECTED_ALTSIGN_SHA\tDependencies/AltSign"
+printf -v expected_gitlink_line '160000 commit %s\tDependencies/AltSign' "$EXPECTED_ALTSIGN_SHA"
 actual_gitlink_line="$(git ls-tree HEAD Dependencies/AltSign)"
 if [[ "$actual_gitlink_line" != "$expected_gitlink_line" ]]; then
   echo "ERROR: AltSign gitlink mismatch" >&2
@@ -33,7 +34,6 @@ if [[ "$actual_altsign_sha" != "$EXPECTED_ALTSIGN_SHA" ]]; then
 fi
 
 source_rel="AltSign/Sources/ALTAppleAPI+Authentication.swift"
-source_path="Dependencies/AltSign/$source_rel"
 actual_source_blob="$(git -C Dependencies/AltSign hash-object "$source_rel")"
 if [[ "$actual_source_blob" != "$EXPECTED_SOURCE_BLOB" ]]; then
   echo "ERROR: AltSign authentication source blob mismatch: $actual_source_blob" >&2
@@ -49,13 +49,19 @@ if [[ ! -f "$patch_path" || ! -f "$test_source" ]]; then
   exit 24
 fi
 
+actual_test_blob="$(git hash-object "$test_source")"
+if [[ "$actual_test_blob" != "$EXPECTED_TEST_BLOB" ]]; then
+  echo "ERROR: vendored GrandSlam regression test blob mismatch: $actual_test_blob" >&2
+  exit 25
+fi
+
 git -C Dependencies/AltSign apply --check "$patch_path"
 git -C Dependencies/AltSign apply "$patch_path"
 
 patched_blob="$(git -C Dependencies/AltSign hash-object "$source_rel")"
 if [[ "$patched_blob" != "$EXPECTED_PATCHED_BLOB" ]]; then
   echo "ERROR: patched authentication source blob mismatch: $patched_blob" >&2
-  exit 25
+  exit 26
 fi
 
 mkdir -p "$test_target_dir"
@@ -66,6 +72,7 @@ printf 'CONTROLLED_ALTSTORE_BASE=%s\n' "$BASE_ALTSTORE_SHA"
 printf 'ALTSIGN_BASE=%s\n' "$EXPECTED_ALTSIGN_SHA"
 printf 'ALTSIGN_AUTH_SOURCE_BEFORE=%s\n' "$EXPECTED_SOURCE_BLOB"
 printf 'ALTSIGN_AUTH_SOURCE_AFTER=%s\n' "$patched_blob"
+printf 'GRANDSLAM_TEST_BLOB=%s\n' "$actual_test_blob"
 printf 'UPSTREAM_ALTSIGN_PR=%s\n' "$UPSTREAM_ALTSIGN_PR"
 printf 'UPSTREAM_ALTSIGN_HEAD=%s\n' "$UPSTREAM_ALTSIGN_HEAD"
 echo 'GRANDSLAM_AUTH_RECOVERY_PATCH_RESULT=PASS'
