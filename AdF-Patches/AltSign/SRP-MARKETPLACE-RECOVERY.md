@@ -6,7 +6,7 @@ Purpose: restore the SRP implementation required by AltServer Apple authenticati
 
 The exact pinned AltSign source `790b9ccdaf2cec831689395c527e80f1f2838041` defines `MARKETPLACE` in `Package.swift`. Its exact `GSAContext.swift` guards real CoreCrypto SRP behind `#if !MARKETPLACE`; with the flag active, `makeAKey()` and `makeM1()` return `nil`, `verifyServerVerificationMessage()` returns `false`, and related key derivation/checksum paths are disabled.
 
-The exact controlled AltStore baseline also contains `MARKETPLACE` in four project compile-condition entries (two Debug, two Release). Upstream AltStore PR #1713 independently identifies this as the cause of Error 3020.
+The exact controlled AltStore baseline also contains `MARKETPLACE` in two project compile-condition entries: one Debug and one Release. Upstream AltStore PR #1713 independently identifies this as the cause of Error 3020.
 
 ## Immutable inputs
 
@@ -22,8 +22,8 @@ The exact controlled AltStore baseline also contains `MARKETPLACE` in four proje
 `AdF-Patches/apply-srp-marketplace-recovery.sh` performs only these source transformations after verifying the immutable inputs:
 
 1. removes the single `.define("MARKETPLACE")` Swift setting from the AltSign target in `Dependencies/AltSign/Package.swift`;
-2. replaces two `DEBUG MARKETPLACE` project conditions with `DEBUG`;
-3. replaces two Release `MARKETPLACE` conditions with an empty condition string;
+2. replaces the single `DEBUG MARKETPLACE` project condition with `DEBUG`;
+3. replaces the single Release `MARKETPLACE` condition with an empty condition string;
 4. verifies `GSAContext.swift` is byte-for-byte unchanged.
 
 The script refuses to continue if the expected occurrence counts or source blobs differ.
