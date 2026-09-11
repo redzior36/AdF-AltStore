@@ -5,8 +5,7 @@ BASE_ALTSTORE_SHA="56854e66fef2eac32dad88dcbad1dc131d430e60"
 EXPECTED_ALTSIGN_SHA="790b9ccdaf2cec831689395c527e80f1f2838041"
 EXPECTED_SOURCE_BLOB="2d3e50c21faba2c751ac85a7dc4abe9c1f90d26c"
 EXPECTED_PATCHED_BLOB="fcb6c74f7ac0ed5578a9e956404a859295d54af7"
-EXPECTED_TEST_BLOB="7527ff1b909dc98cdaa6f669fa3411adddb33be5"
-UPSTREAM_TEST_BLOB="d94eea268b203c93082260c201e3840dcfe96fcd"
+EXPECTED_TEST_BLOB="d94eea268b203c93082260c201e3840dcfe96fcd"
 UPSTREAM_ALTSIGN_PR="https://github.com/rileytestut/AltSign/pull/53"
 UPSTREAM_ALTSIGN_HEAD="530e44aee968da15f8efe8d8eef829f3944ee318"
 
@@ -52,7 +51,7 @@ fi
 
 actual_test_blob="$(git hash-object "$test_source")"
 if [[ "$actual_test_blob" != "$EXPECTED_TEST_BLOB" ]]; then
-  echo "ERROR: controlled GrandSlam regression test blob mismatch: $actual_test_blob" >&2
+  echo "ERROR: GrandSlam regression test is not byte-identical to the pinned upstream harness: $actual_test_blob" >&2
   exit 25
 fi
 
@@ -73,8 +72,7 @@ printf 'CONTROLLED_ALTSTORE_BASE=%s\n' "$BASE_ALTSTORE_SHA"
 printf 'ALTSIGN_BASE=%s\n' "$EXPECTED_ALTSIGN_SHA"
 printf 'ALTSIGN_AUTH_SOURCE_BEFORE=%s\n' "$EXPECTED_SOURCE_BLOB"
 printf 'ALTSIGN_AUTH_SOURCE_AFTER=%s\n' "$patched_blob"
-printf 'CONTROLLED_GRANDSLAM_TEST_BLOB=%s\n' "$actual_test_blob"
-printf 'UPSTREAM_GRANDSLAM_TEST_BLOB=%s\n' "$UPSTREAM_TEST_BLOB"
+printf 'GRANDSLAM_TEST_BLOB=%s\n' "$actual_test_blob"
 printf 'UPSTREAM_ALTSIGN_PR=%s\n' "$UPSTREAM_ALTSIGN_PR"
 printf 'UPSTREAM_ALTSIGN_HEAD=%s\n' "$UPSTREAM_ALTSIGN_HEAD"
 echo 'GRANDSLAM_AUTH_RECOVERY_PATCH_RESULT=PASS'
