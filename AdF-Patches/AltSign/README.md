@@ -10,9 +10,12 @@ Purpose: recover AltStore Classic / AltServer Apple authentication when GrandSla
 - patched authentication source blob: `fcb6c74f7ac0ed5578a9e956404a859295d54af7`
 - upstream contribution: `rileytestut/AltSign` PR #53
 - upstream contribution head: `530e44aee968da15f8efe8d8eef829f3944ee318`
-- vendored regression test blob: `d94eea268b203c93082260c201e3840dcfe96fcd`
+- upstream regression-test blob: `d94eea268b203c93082260c201e3840dcfe96fcd`
+- controlled vendored test adaptation blob: `7527ff1b909dc98cdaa6f669fa3411adddb33be5`
 
-The full PR #53 head is intentionally **not** used as the AltSign gitlink. It is on a different AltSign history and carries unrelated crypto/build changes relative to AdF's pinned baseline. The production authentication hunk itself is based on the exact same source blob as the pinned baseline, so this directory publishes only that auditable transport delta plus the exact credential-free regression harness.
+The full PR #53 head is intentionally **not** used as the AltSign gitlink. It is on a different AltSign history and carries unrelated crypto/build changes relative to AdF's pinned baseline. The production authentication hunk itself is based on the exact same source blob as the pinned baseline, so this directory publishes only that auditable transport delta.
+
+The Python regression harness is a controlled textual adaptation of the upstream 17-scenario harness necessitated by transport through the repository API. It preserves the same scenario matrix and assertions but is not claimed byte-for-byte identical; both upstream and controlled blob IDs are recorded and the controlled blob is fail-closed pinned by the applicator. The production Swift result **is** required to match the exact upstream patched blob.
 
 ## Delta
 
