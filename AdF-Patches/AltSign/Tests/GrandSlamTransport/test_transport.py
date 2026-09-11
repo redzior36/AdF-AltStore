@@ -70,13 +70,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
             status = 409
             payload = {'Response': {'Status': {'au': 'secondaryAuth'}}}
         elif case == 'structured200':
-            payload = {'Response': {'Status': {'ec': -22406, 'em': 'Incorrect fixture credentials'}}
+            payload = {'Response': {'Status': {'ec': -22406, 'em': 'Incorrect fixture credentials'}}}
         elif case == 'anisette503':
             status = 503
             payload = {'Response': {'Status': {'ec': -22421, 'em': 'Invalid fixture anisette'}}}
         elif case == 'apple503':
             status = 503
-            payload = {'Response': {'Status': {'ec': -12345, 'em': 'Fixture Apple error'}}
+            payload = {'Response': {'Status': {'ec': -12345, 'em': 'Fixture Apple error'}}}
         elif case == 'html200':
             body = b'<html>PRIVATE_MARKER</html>'
         elif case == 'html401':
@@ -172,7 +172,7 @@ for name in cases {
         signal.signal()
     }
     if ["cancel", "network", "timeout", "shortBudget", "expired"].contains(name) {
-        let url = ["cancel", "network"].contains(name) ? URL(string: "http://fixture.invalid/\(name)")! : URL(string: "http://127.0.0.1:\(port)/GsService2")!
+        let url = ["cancel", "network"].contains(name) ? URL(string: "http://fixture.invalid/\\(name)")! : URL(string: "http://127.0.0.1:\\(port)/GsService2")!
         var request = URLRequest(url: url); request.httpMethod = "POST"
         request.httpBody = try! PropertyListSerialization.data(fromPropertyList: ["Request": ["case": name]], format: .xml, options: 0)
         let budget: TimeInterval = name == "expired" ? -1 : (name == "timeout" || name == "shortBudget" ? 0.5 : 20)
@@ -186,7 +186,7 @@ for name in cases {
     assert(completions == 1)
     reports.append(report)
 }
-assert(FailingProtocol.calls == 2, "transport fixture count: \(FailingProtocol.calls)")
+assert(FailingProtocol.calls == 2, "transport fixture count: \\(FailingProtocol.calls)")
 let encoded = try! JSONSerialization.data(withJSONObject: reports, options: [.sortedKeys])
 print(String(data: encoded, encoding: .utf8)!)
 '''
